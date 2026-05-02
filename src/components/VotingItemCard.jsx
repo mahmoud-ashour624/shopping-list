@@ -39,7 +39,7 @@ export default function VotingItemCard({ item, userId }) {
   return (
     <div className="flex items-center justify-between gap-3 px-4 py-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-800 truncate">{item.name}</p>
+        <p className="text-sm font-medium text-gray-800 break-words">{item.name}</p>
         <p className="text-xs text-gray-400 mt-0.5">
           {remaining > 0
             ? `${remaining} more vote${remaining !== 1 ? 's' : ''} needed`

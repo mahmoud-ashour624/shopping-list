@@ -63,7 +63,7 @@ export default function ApprovedItemCard({ item }) {
       </button>
 
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium transition-colors ${item.bought ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+        <p className={`text-sm font-medium break-words transition-colors ${item.bought ? 'line-through text-gray-400' : 'text-gray-800'}`}>
           {item.name}
         </p>
 
