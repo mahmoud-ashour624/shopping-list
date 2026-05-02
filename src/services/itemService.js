@@ -2,6 +2,7 @@ import {
   collection,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc,
   serverTimestamp,
   runTransaction,
@@ -46,6 +47,27 @@ export async function voteForItem(itemId, userId) {
 
     transaction.update(itemRef, updates)
   })
+}
+
+export async function removeVote(itemId, userId) {
+  const itemRef = doc(db, ITEMS_COLLECTION, itemId)
+
+  await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(itemRef)
+    if (!snap.exists()) throw new Error('Item not found')
+
+    const data = snap.data()
+    if (!data.voters.includes(userId)) return
+
+    transaction.update(itemRef, {
+      voters: data.voters.filter((v) => v !== userId),
+      votes: data.votes - 1,
+    })
+  })
+}
+
+export async function deleteItem(itemId) {
+  await deleteDoc(doc(db, ITEMS_COLLECTION, itemId))
 }
 
 export async function toggleBought(itemId, current) {
