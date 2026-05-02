@@ -1,6 +1,6 @@
 import VotingItemCard from './VotingItemCard'
 
-export default function VotingList({ items, userId }) {
+export default function VotingList({ items, userId, userName }) {
   return (
     <section>
       <div className="flex items-center gap-2 mb-3">
@@ -19,7 +19,7 @@ export default function VotingList({ items, userId }) {
         <ul className="flex flex-col gap-2">
           {items.map((item) => (
             <li key={item.id}>
-              <VotingItemCard item={item} userId={userId} />
+              <VotingItemCard item={item} userId={userId} userName={userName} />
             </li>
           ))}
         </ul>

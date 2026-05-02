@@ -3,7 +3,7 @@ import VotingList from '../components/VotingList'
 import ApprovedList from '../components/ApprovedList'
 import { useItems } from '../hooks/useItems'
 
-export default function Home({ userId }) {
+export default function Home({ userId, userName }) {
   const { votingItems, approvedItems, loading, error } = useItems()
 
   if (loading) {
@@ -24,9 +24,9 @@ export default function Home({ userId }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <AddItemForm />
+      <AddItemForm userId={userId} userName={userName} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <VotingList items={votingItems} userId={userId} />
+        <VotingList items={votingItems} userId={userId} userName={userName} />
         <ApprovedList items={approvedItems} />
       </div>
     </div>

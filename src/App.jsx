@@ -1,8 +1,11 @@
 import { useAuth } from './hooks/useAuth'
+import { useUserName } from './hooks/useUserName'
 import Home from './pages/Home'
+import NamePrompt from './components/NamePrompt'
 
 export default function App() {
   const { user, loading, error } = useAuth()
+  const { userName, saveName, clearName, hasName } = useUserName()
 
   if (loading) {
     return (
@@ -28,6 +31,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {!hasName && <NamePrompt onSave={saveName} />}
+
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
@@ -37,17 +42,27 @@ export default function App() {
               <p className="text-xs text-gray-400 hidden sm:block">Vote on what to bring · Check off what's bought</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            <span className="font-mono truncate max-w-[80px] sm:max-w-none">
-              {user?.uid?.slice(0, 8)}…
-            </span>
-          </div>
+
+          {hasName && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="font-medium">{userName}</span>
+              </div>
+              <button
+                onClick={clearName}
+                title="Change name"
+                className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1.5 rounded-full hover:bg-gray-100 transition"
+              >
+                ✏️
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
-        <Home userId={user?.uid} />
+        <Home userId={user?.uid} userName={userName} />
       </main>
 
       <footer className="text-center py-6 text-xs text-gray-300">

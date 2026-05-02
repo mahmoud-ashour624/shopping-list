@@ -3,7 +3,7 @@ import { addItem } from '../services/itemService'
 
 const MAX_CHARS = 100
 
-export default function AddItemForm() {
+export default function AddItemForm({ userId, userName }) {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -27,7 +27,7 @@ export default function AddItemForm() {
     setLoading(true)
     setError(null)
     try {
-      await addItem(name)
+      await addItem(name, userId, userName)
       setName('')
     } catch (err) {
       setError(err.message)
@@ -70,9 +70,7 @@ export default function AddItemForm() {
           {loading ? 'Adding…' : '+ Add Item'}
         </button>
       </div>
-      {error && (
-        <p className="text-xs text-red-500">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </form>
   )
 }

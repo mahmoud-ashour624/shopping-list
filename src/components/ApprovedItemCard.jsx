@@ -67,6 +67,12 @@ export default function ApprovedItemCard({ item }) {
           {item.name}
         </p>
 
+        {item.addedBy && (
+          <p className="text-xs text-gray-400 mt-0.5">
+            Added by <span className="font-medium text-gray-500">{item.addedBy}</span>
+          </p>
+        )}
+
         <div className="flex items-center gap-1.5 mt-1.5">
           {editing ? (
             <div className="flex items-center gap-1.5 w-full">

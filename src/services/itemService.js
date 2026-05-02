@@ -12,7 +12,7 @@ import { db } from '../firebase'
 const ITEMS_COLLECTION = 'items'
 const VOTE_THRESHOLD = 3
 
-export async function addItem(name) {
+export async function addItem(name, userId, userName) {
   if (!name.trim()) throw new Error('Item name is required')
 
   await addDoc(collection(db, ITEMS_COLLECTION), {
@@ -20,13 +20,16 @@ export async function addItem(name) {
     status: 'voting',
     votes: 0,
     voters: [],
+    voterNames: [],
+    addedBy: userName,
+    addedByUid: userId,
     bought: false,
     assignedTo: '',
     createdAt: serverTimestamp(),
   })
 }
 
-export async function voteForItem(itemId, userId) {
+export async function voteForItem(itemId, userId, userName) {
   const itemRef = doc(db, ITEMS_COLLECTION, itemId)
 
   await runTransaction(db, async (transaction) => {
@@ -34,18 +37,18 @@ export async function voteForItem(itemId, userId) {
     if (!snap.exists()) throw new Error('Item not found')
 
     const data = snap.data()
-
     if (data.voters.includes(userId)) return
 
     const newVoters = [...data.voters, userId]
+    const newVoterNames = [...(data.voterNames || []), userName]
     const newVotes = data.votes + 1
-    const updates = {
+
+    transaction.update(itemRef, {
       voters: newVoters,
+      voterNames: newVoterNames,
       votes: newVotes,
       ...(newVotes >= VOTE_THRESHOLD ? { status: 'approved' } : {}),
-    }
-
-    transaction.update(itemRef, updates)
+    })
   })
 }
 
@@ -57,10 +60,12 @@ export async function removeVote(itemId, userId) {
     if (!snap.exists()) throw new Error('Item not found')
 
     const data = snap.data()
-    if (!data.voters.includes(userId)) return
+    const idx = data.voters.indexOf(userId)
+    if (idx === -1) return
 
     transaction.update(itemRef, {
-      voters: data.voters.filter((v) => v !== userId),
+      voters: data.voters.filter((_, i) => i !== idx),
+      voterNames: (data.voterNames || []).filter((_, i) => i !== idx),
       votes: data.votes - 1,
     })
   })
