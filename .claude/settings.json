@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Read(//usr/local/bin/**)",
+      "Read(//Users/mahashour/.nvm/versions/**)",
+      "Bash(/opt/homebrew/bin/node --version)",
+      "Read(//opt/**)"
+    ]
+  }
+}
