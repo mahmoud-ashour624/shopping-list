@@ -1,11 +1,25 @@
 import { useState } from 'react'
-import { toggleBought, updateAssignedTo } from '../services/itemService'
+import toast from 'react-hot-toast'
+import { toggleBought, updateAssignedTo, moveBackToVoting } from '../services/itemService'
 
-export default function ApprovedItemCard({ item }) {
+export default function ApprovedItemCard({ item, userId }) {
   const [assignInput, setAssignInput] = useState(item.assignedTo || '')
   const [editing, setEditing] = useState(false)
   const [savingAssign, setSavingAssign] = useState(false)
   const [togglingBought, setTogglingBought] = useState(false)
+  const [movingBack, setMovingBack] = useState(false)
+
+  async function handleMoveBack() {
+    if (movingBack) return
+    setMovingBack(true)
+    try {
+      await moveBackToVoting(item.id)
+      toast('Moved back to voting 🔄', { duration: 3000 })
+    } catch (err) {
+      toast.error(err.message || 'Failed to move item')
+      setMovingBack(false)
+    }
+  }
 
   async function handleToggle() {
     if (togglingBought) return
@@ -117,11 +131,29 @@ export default function ApprovedItemCard({ item }) {
         </div>
       </div>
 
-      <div className="shrink-0 flex items-center gap-1 text-xs text-gray-400">
-        <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-        </svg>
-        <span>{item.votes}</span>
+      <div className="shrink-0 flex flex-col items-end gap-1.5">
+        <div className="flex items-center gap-1 text-xs text-gray-400">
+          <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </svg>
+          <span>{item.votes}</span>
+        </div>
+        {userId === item.addedByUid && (
+          <button
+            onClick={handleMoveBack}
+            disabled={movingBack}
+            title="Move back to voting"
+            className="p-1 rounded-lg text-gray-300 hover:text-amber-400 hover:bg-amber-50 transition-all active:scale-95 disabled:opacity-50"
+          >
+            {movingBack ? (
+              <span className="w-3 h-3 border-2 border-amber-200 border-t-amber-400 rounded-full animate-spin block" />
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+          </button>
+        )}
       </div>
     </div>
   )

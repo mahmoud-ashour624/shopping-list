@@ -75,6 +75,25 @@ export async function deleteItem(itemId) {
   await deleteDoc(doc(db, ITEMS_COLLECTION, itemId))
 }
 
+export async function resetVotes(itemId) {
+  await updateDoc(doc(db, ITEMS_COLLECTION, itemId), {
+    votes: 0,
+    voters: [],
+    voterNames: [],
+  })
+}
+
+export async function moveBackToVoting(itemId) {
+  await updateDoc(doc(db, ITEMS_COLLECTION, itemId), {
+    status: 'voting',
+    votes: 0,
+    voters: [],
+    voterNames: [],
+    bought: false,
+    assignedTo: '',
+  })
+}
+
 export async function toggleBought(itemId, current) {
   await updateDoc(doc(db, ITEMS_COLLECTION, itemId), { bought: !current })
 }

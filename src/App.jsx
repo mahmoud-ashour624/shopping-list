@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast'
 import { useAuth } from './hooks/useAuth'
 import { useUserName } from './hooks/useUserName'
 import Home from './pages/Home'
@@ -31,6 +32,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          duration: 3000,
+          style: { fontSize: '14px', borderRadius: '12px', padding: '10px 16px' },
+          success: { iconTheme: { primary: '#3b82f6', secondary: '#fff' } },
+        }}
+      />
       {!hasName && <NamePrompt onSave={saveName} />}
 
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">

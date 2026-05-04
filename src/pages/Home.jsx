@@ -24,10 +24,14 @@ export default function Home({ userId, userName }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <AddItemForm userId={userId} userName={userName} />
+      <AddItemForm
+        userId={userId}
+        userName={userName}
+        existingItems={[...votingItems, ...approvedItems]}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <VotingList items={votingItems} userId={userId} userName={userName} />
-        <ApprovedList items={approvedItems} />
+        <ApprovedList items={approvedItems} userId={userId} />
       </div>
     </div>
   )

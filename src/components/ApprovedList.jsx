@@ -1,6 +1,6 @@
 import ApprovedItemCard from './ApprovedItemCard'
 
-export default function ApprovedList({ items }) {
+export default function ApprovedList({ items, userId }) {
   const boughtCount = items.filter((i) => i.bought).length
 
   return (
@@ -26,7 +26,7 @@ export default function ApprovedList({ items }) {
         <ul className="flex flex-col gap-2">
           {items.map((item) => (
             <li key={item.id}>
-              <ApprovedItemCard item={item} />
+              <ApprovedItemCard item={item} userId={userId} />
             </li>
           ))}
         </ul>
